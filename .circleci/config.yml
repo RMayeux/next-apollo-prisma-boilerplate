@@ -61,7 +61,6 @@ jobs:
             - dependencies-{{ checksum "package.json" }}-{{ .Environment.CACHE_VERSION }}
             # fallback to using the latest cache if no exact match is found
             - dependencies-{{ .Environment.CACHE_VERSION }}
-
       - run: yarn run test
 
   perf:
@@ -95,9 +94,15 @@ workflows:
           filters:
             branches:
               ignore: /develop|master/
-      - test:
+      - prepare_cypress:
           requires:
             - bundle_dependencies
+          filters:
+            branches:
+              ignore: /develop|master/
+      - test:
+          requires:
+            - prepare_cypress
           filters:
             branches:
               ignore: /develop|master/
