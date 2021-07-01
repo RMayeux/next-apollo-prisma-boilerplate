@@ -49,6 +49,20 @@ jobs:
           paths:
             - .next
 
+  prepare_cypress:
+    <<: *defaults
+
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - dependencies-{{ checksum "package.json" }}-{{ .Environment.CACHE_VERSION }}
+            # fallback to using the latest cache if no exact match is found
+            - dependencies-{{ .Environment.CACHE_VERSION }}
+      - run: yarn run cypress install
+
   test:
     <<: *defaults
 
