@@ -2,9 +2,6 @@ defaults: &defaults
   working_directory: ~/repo
   docker:
     - image: circleci/node:latest
-version: 2.1
-orbs:
-  cypress: cypress-io/cypress@1
 
 jobs:
   checkout_code:
@@ -98,21 +95,15 @@ workflows:
           filters:
             branches:
               ignore: /develop|master/
-      - cypress/open:
-          requires:
-            - bundle_dependencies
-      - cypress/run:
-          requires:
-            - cypress/open
-          record: true
-          parallel: true
-          parallelism: 4
-      - build:
+      - test:
           requires:
             - bundle_dependencies
           filters:
             branches:
               ignore: /develop|master/
+      - build:
+          requires:
+            - bundle_dependencies
       - perf:
           requires:
             - build
