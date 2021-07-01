@@ -9,4 +9,4 @@ workflows:
       - cypress/run:
           record: true
           parallel: true
-          parallelism: 10
+          parallelism: 4
