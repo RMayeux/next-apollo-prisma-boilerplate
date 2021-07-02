@@ -1,3 +1,4 @@
+version: 2.1
 defaults: &defaults
   working_directory: ~/repo
   docker:
@@ -86,10 +87,10 @@ workflows:
       - cypress/run:
           requires:
             - build
-          record: true # record results on Cypress Dashboard
-          parallel: true # split all specs across machines
-          parallelism: 4 # use 4 CircleCI machines to finish quickly
-          start: "yarn start" # start server before running tests
+          record: true
+          parallel: true
+          parallelism: 4
+          start: "yarn start"
       - perf:
           requires:
             - build
