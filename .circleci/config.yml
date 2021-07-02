@@ -89,12 +89,9 @@ workflows:
           yarn: true
           requires:
             - cypress/install
-          start: 'yarn run start --parallel'
-          install-command: 'yarn install --no-optional --unsafe-perm'
       - perf:
           requires:
             - build
           filters:
             branches:
               ignore: /develop|master/
-
