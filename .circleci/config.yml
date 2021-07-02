@@ -2,7 +2,8 @@ defaults: &defaults
   working_directory: ~/repo
   docker:
     - image: circleci/node:latest
-
+orbs:
+  cypress: cypress-io/cypress@1
 jobs:
   checkout_code:
     <<: *defaults
@@ -43,39 +44,10 @@ jobs:
             - dependencies-{{ .Environment.CACHE_VERSION }}
 
       - run: yarn run build
-
       - persist_to_workspace:
           root: ./
           paths:
             - .next
-
-  prepare_cypress:
-    <<: *defaults
-
-    steps:
-      - attach_workspace:
-          at: ~/repo
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - dependencies-{{ checksum "package.json" }}-{{ .Environment.CACHE_VERSION }}
-            # fallback to using the latest cache if no exact match is found
-            - dependencies-{{ .Environment.CACHE_VERSION }}
-      - run: yarn run cypress install
-
-  test:
-    <<: *defaults
-
-    steps:
-      - attach_workspace:
-          at: ~/repo
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - dependencies-{{ checksum "package.json" }}-{{ .Environment.CACHE_VERSION }}
-            # fallback to using the latest cache if no exact match is found
-            - dependencies-{{ .Environment.CACHE_VERSION }}
-      - run: yarn run test
 
   perf:
     docker:
@@ -107,22 +79,17 @@ workflows:
             - checkout_code
           filters:
             branches:
-              ignore: /develop|master/
-      - prepare_cypress:
-          requires:
-            - bundle_dependencies
-          filters:
-            branches:
-              ignore: /develop|master/
-      - test:
-          requires:
-            - prepare_cypress
-          filters:
-            branches:
-              ignore: /develop|master/
+              ignore: /develop|master/p
       - build:
           requires:
             - bundle_dependencies
+      - cypress/run:
+          requires:
+            - build
+          record: true # record results on Cypress Dashboard
+          parallel: true # split all specs across machines
+          parallelism: 4 # use 4 CircleCI machines to finish quickly
+          start: "yarn start" # start server before running tests
       - perf:
           requires:
             - build
