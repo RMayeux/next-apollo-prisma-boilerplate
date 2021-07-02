@@ -63,6 +63,7 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - dependencies-{{ .Environment.CACHE_VERSION }}
       - run: sudo yarn global add @lhci/cli@0.3.x
+      - run: yarn run dev
       - run:
           name: lhci autorun
           command: |
@@ -84,13 +85,12 @@ workflows:
       - build:
           requires:
             - bundle_dependencies
+      - cypress/install
       - cypress/run:
           requires:
-            - build
-          record: true
-          parallel: true
-          parallelism: 4
-          start: "yarn start"
+            - cypress/install
+          start: "yarn run start --parallel"
+          install-command: "yarn install --no-optional --unsafe-perm"
       - perf:
           requires:
             - build
