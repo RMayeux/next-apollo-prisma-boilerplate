@@ -51,9 +51,8 @@ jobs:
             - .next
 
   perf:
-    docker:
-      - image: circleci/node:12.1-browsers
-    working_directory: ~/repo
+    <<: *defaults
+
     steps:
       - attach_workspace:
           at: ~/repo
@@ -63,13 +62,11 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - dependencies-{{ .Environment.CACHE_VERSION }}
       - run: sudo yarn global add @lhci/cli@0.3.x
-      - run: yarn run dev
       - run:
           name: lhci autorun
           command: |
             lhci autorun
 workflows:
-  version: 2
   build-and-test:
     jobs:
       - checkout_code:
@@ -85,12 +82,12 @@ workflows:
       - build:
           requires:
             - bundle_dependencies
-      - cypress/install:
-          yarn: true
+      - cypress/install
       - cypress/run:
-          yarn: true
           requires:
             - cypress/install
+          start: "yarn run start --parallel"
+          install-command: "yarn install --no-optional --unsafe-perm"
       - perf:
           requires:
             - build
