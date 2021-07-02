@@ -67,6 +67,7 @@ jobs:
           command: |
             lhci autorun
 workflows:
+  version: 2
   build-and-test:
     jobs:
       - checkout_code:
@@ -82,8 +83,10 @@ workflows:
       - build:
           requires:
             - bundle_dependencies
-      - cypress/install
+      - cypress/install:
+          yarn: true
       - cypress/run:
+          yarn: true
           requires:
             - cypress/install
           start: "yarn run start --parallel"
