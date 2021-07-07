@@ -1,9 +1,9 @@
-import { objectType } from "nexus";
+import { extendType } from "nexus";
 
-const userQueries = objectType({
-  name: "Query",
+const userQueries = extendType({
+  type: "Query",
   definition(t) {
-    t.nonNull.list.nonNull.field("user", {
+    t.nonNull.list.nonNull.field("allUsers", {
       type: "User",
       resolve: (_parent, _args, context) => {
         return context.prisma.user.findMany();

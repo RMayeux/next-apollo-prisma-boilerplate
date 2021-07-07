@@ -1,4 +1,4 @@
-import { objectType, asNexusMethod } from "nexus";
+import { objectType } from "nexus";
 
 const Post = objectType({
   name: "Post",

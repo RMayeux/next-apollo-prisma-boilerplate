@@ -6,8 +6,7 @@ const DateTime = asNexusMethod(DateTimeResolver, "date");
 const schema = makeSchema({
   types: [...getSchemaTypes(), DateTime],
   outputs: {
-    schema: __dirname + "/../schema.graphql",
-    typegen: __dirname + "/generated/nexus.ts",
+    schema: __dirname + "/../../prisma/schema.graphql",
   },
   sourceTypes: {
     modules: [

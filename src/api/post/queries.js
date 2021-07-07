@@ -1,7 +1,7 @@
-import { objectType, intArg } from "nexus";
+import { extendType, intArg } from "nexus";
 
-const postQueries = objectType({
-  name: "Query",
+const postQueries = extendType({
+  type: "Query",
   definition(t) {
     t.nullable.field("postById", {
       type: "Post",
