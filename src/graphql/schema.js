@@ -1,10 +1,16 @@
+import { makeSchema, asNexusMethod, enumType } from "nexus";
+import { DateTimeResolver } from "graphql-scalars";
 import { getSchemaTypes } from "./helpers/getSchemaTypes.js";
-const { makeSchema, asNexusMethod } = require("nexus");
-const { DateTimeResolver } = require("graphql-scalars");
+
 const DateTime = asNexusMethod(DateTimeResolver, "date");
 
+const SortOrder = enumType({
+  name: "SortOrder",
+  members: ["asc", "desc"],
+});
+
 const schema = makeSchema({
-  types: [...getSchemaTypes(), DateTime],
+  types: [...getSchemaTypes(), DateTime, SortOrder],
   outputs: {
     schema: __dirname + "/../../prisma/schema.graphql",
   },
